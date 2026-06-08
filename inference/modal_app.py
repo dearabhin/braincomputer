@@ -34,14 +34,19 @@ image = (
     modal.Image.debian_slim(python_version="3.11")
     .apt_install("ffmpeg", "git")
     .pip_install(
-        "torch",
-        "numpy",
-        "pandas",
-        "nilearn",
-        "huggingface_hub",
-        # TRIBE v2 itself (inference extras). Pinned to a commit at deploy time in
-        # practice; main is fine for the portfolio build.
+        # Pin exca to the version neuralset 0.0.2 (a TRIBE dep) was built against.
+        # neuralset calls exca.steps.base.NoValue(), but newer exca (>=~0.5.23) moved
+        # NoValue to exca.steps.identity, so the unpinned newest release (0.5.26)
+        # breaks `import TribeModel` with AttributeError. 0.5.20 satisfies neuralset's
+        # `exca>=0.5.20` floor and still has NoValue in exca.steps.base.
+        "exca==0.5.20",
+        # TRIBE v2 itself. Its pyproject pins compatible torch/numpy/pandas/transformers
+        # (numpy==2.2.6, torch>=2.5.1,<2.7, neuralset==0.0.2, ...), so we DON'T pin those
+        # ourselves — loose pins here just re-introduce resolver drift.
         "git+https://github.com/facebookresearch/tribev2.git",
+        # nilearn is only in TRIBE's optional [plotting] extra, but inference/networks.py
+        # needs it for the functional-network atlases — install it explicitly.
+        "nilearn",
     )
     # Bundle our scoring code into the image.
     .add_local_python_source("networks", "scoring", "insights", "preprocess")

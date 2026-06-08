@@ -308,6 +308,11 @@ git add . && git commit -m "describe your change" && git push
   has correct `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET`. See logs: `docker compose logs api`.
 - Hugging Face/Llama access: re-confirm Part 1 and that `modal secret list` shows `huggingface`.
 
+**`modal run` fails with `AttributeError: module 'exca.steps.base' has no attribute 'NoValue'`**
+- TRIBE under-pins a couple of transitive dependencies. The known one is `exca`, already pinned to
+  `exca==0.5.20` in `inference/modal_app.py`. If a *different* package throws a version/import error after
+  a rebuild, pin that package the same way (add it to the `.pip_install(...)` list) and redeploy.
+
 **Want to test the site without spending GPU money?**
 - Set `MOCK_INFERENCE=1` in the droplet `.env` and `docker compose up -d`. Uploads return fake (but
   realistic-looking) results instantly. Switch back to `0` for real analysis.

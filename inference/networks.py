@@ -91,40 +91,47 @@ class NetworkMasks:
         return cls(masks=masks, n_verts=n_verts)
 
 
-# Yeo-7 network index -> our network keys (1=Visual, 2=Somatomotor, 3=Dorsal Attn,
-# 4=Ventral Attn, 5=Limbic, 6=Frontoparietal, 7=Default).
-_YEO7_TO_KEY = {1: "visual", 7: "default_mode"}
-
-# Destrieux (a2009s) region-name substrings -> network keys, for the networks Yeo-7
-# does not cleanly isolate. Matched case-insensitively against label names.
+# All six networks are derived from the Destrieux (a2009s) *surface* atlas, which is
+# natively defined per-vertex on fsaverage5 — no fragile volumetric->surface
+# projection needed. Each entry maps a network to region-name substrings, matched
+# case-insensitively against the Destrieux label names. Substrings are chosen to
+# avoid cross-contamination (e.g. "G_cuneus" matches the cuneus but NOT "G_precuneus").
+# Networks may legitimately share regions (e.g. STS in language/emotional/multisensory);
+# masks are independent, so overlap is fine.
 _DESTRIEUX_SUBSTR = {
-    "auditory": ["G_temp_sup-G_T_transv", "G_temp_sup-Plan_tempo", "Lat_Fis-post"],
+    # Occipital + ventral/dorsal visual + MT/fusiform + lingual/calcarine.
+    "visual": ["occipital", "calcarine", "G_cuneus", "oc-temp", "S_oc_", "Lingual"],
+    # Heschl's gyrus (transverse temporal), planum temporale/polare, posterior Sylvian.
+    "auditory": ["G_temp_sup-G_T_transv", "G_temp_sup-Plan_tempo", "G_temp_sup-Plan_polar",
+                 "Lat_Fis-post", "S_temporal_transverse"],
+    # Broca (IFG triangular/opercular) + STG-lateral + STS.
     "language": ["G_front_inf-Triangul", "G_front_inf-Opercular", "G_temp_sup-Lateral", "S_temporal_sup"],
+    # TPJ (angular) + MTG + STS — theory-of-mind / emotional salience.
     "emotional_social": ["G_temporal_middle", "G_pariet_inf-Angular", "S_temporal_sup"],
+    # Posterior DMN core: precuneus, posterior cingulate, angular gyrus, subparietal sulcus.
+    "default_mode": ["G_precuneus", "cingul-Post", "G_pariet_inf-Angular", "S_subparietal"],
+    # STS / supramarginal (TPO junction) + STG + inferior occipital — sight+sound binding.
     "multisensory": ["S_temporal_sup", "G_temp_sup-Lateral", "G_pariet_inf-Supramar", "G_and_S_occipital_inf"],
 }
 
 
 def _build_masks() -> NetworkMasks:
-    """Construct vertex masks from public atlases via nilearn.
+    """Construct vertex masks from the Destrieux surface atlas via nilearn.
 
     Imported lazily so that environments without nilearn (e.g. the Flask box or a
     unit test using a prebuilt cache) don't need the heavy dependency.
     """
     from nilearn import datasets
-    from nilearn.surface import vol_to_surf  # noqa: F401  (kept for parity / future use)
 
     masks: dict[str, np.ndarray] = {k: np.zeros(N_VERTS, dtype=bool) for k in NETWORK_KEYS}
 
-    # --- Yeo-7 on fsaverage5 (surface annotation) ---
-    yeo = datasets.fetch_atlas_surf_destrieux()  # gives Destrieux below; Yeo handled via labels
-    # Destrieux surface labels (per-hemisphere integer maps + names).
-    destrieux = yeo
-    labels = [l.decode() if isinstance(l, bytes) else l for l in destrieux["labels"]]
+    # Destrieux surface atlas on fsaverage5: per-hemisphere integer label maps + names.
+    destrieux = datasets.fetch_atlas_surf_destrieux()
+    labels = [l.decode() if isinstance(l, bytes) else str(l) for l in destrieux["labels"]]
 
     for hemi_i, hemi in enumerate(("map_left", "map_right")):
         offset = hemi_i * N_VERTS_PER_HEMI
-        annot = np.asarray(destrieux[hemi])
+        annot = np.asarray(destrieux[hemi]).ravel()[:N_VERTS_PER_HEMI]
         for net_key, substrs in _DESTRIEUX_SUBSTR.items():
             target_ids = [
                 idx for idx, name in enumerate(labels)
@@ -133,11 +140,7 @@ def _build_masks() -> NetworkMasks:
             if not target_ids:
                 continue
             sel = np.isin(annot, target_ids)
-            masks[net_key][offset:offset + N_VERTS_PER_HEMI] |= sel
-
-    # Visual + default-mode from Yeo-7 thick (more reliable than Destrieux for these).
-    yeo7 = datasets.fetch_atlas_yeo_2011()
-    _apply_yeo7_surface(masks, yeo7)
+            masks[net_key][offset:offset + len(sel)] |= sel
 
     # Guarantee every network has at least a few vertices; otherwise scoring NaNs.
     for k in NETWORK_KEYS:
@@ -145,26 +148,6 @@ def _build_masks() -> NetworkMasks:
             raise RuntimeError(f"network '{k}' produced an empty mask; check atlas fetch")
 
     return NetworkMasks(masks=masks)
-
-
-def _apply_yeo7_surface(masks: dict[str, np.ndarray], yeo7) -> None:
-    """Project the Yeo-7 volumetric atlas onto fsaverage5 and fill visual/DMN masks.
-
-    Uses nilearn's fsaverage5 pial surfaces. Kept separate so the Destrieux path can
-    stand alone if the volumetric projection is unavailable in a given nilearn build.
-    """
-    try:
-        from nilearn import datasets, surface
-        fsavg = datasets.fetch_surf_fsaverage("fsaverage5")
-        for hemi_i, mesh in enumerate((fsavg["pial_left"], fsavg["pial_right"])):
-            offset = hemi_i * N_VERTS_PER_HEMI
-            proj = surface.vol_to_surf(yeo7["thick_7"], mesh, interpolation="nearest")
-            proj = np.rint(np.nan_to_num(proj)).astype(int).ravel()[:N_VERTS_PER_HEMI]
-            for yeo_id, key in _YEO7_TO_KEY.items():
-                masks[key][offset:offset + N_VERTS_PER_HEMI] |= (proj == yeo_id)
-    except Exception as exc:  # pragma: no cover - depends on nilearn data availability
-        # Non-fatal: Destrieux already seeded the other networks; log and continue.
-        print(f"[networks] Yeo-7 surface projection skipped: {exc}")
 
 
 @lru_cache(maxsize=1)
