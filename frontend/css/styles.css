@@ -162,6 +162,19 @@ input[type="file"] { display: none; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .chart-card { background: var(--surface); border-radius: var(--r-card); padding: 22px; box-shadow: var(--shadow-card); }
 .panel-title { font-size: 0.95rem; font-weight: 700; margin: 0 0 16px; }
+.panel-sub { margin: -8px 0 16px; font-size: 0.82rem; color: var(--muted); }
+
+/* Brain-network activation maps */
+#brainMapsCard { margin-top: 16px; }
+.brain-grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+.brain-cell { margin: 0; background: var(--surface-2); border-radius: var(--r-input); padding: 8px; }
+.brain-cell img { width: 100%; height: auto; display: block; border-radius: 6px; }
+.brain-cell figcaption {
+  margin-top: 6px; text-align: center; font-size: 0.78rem; font-weight: 600; color: var(--text);
+}
 
 .insights { margin-top: 20px; display: grid; gap: 10px; }
 .insight {
@@ -201,7 +214,7 @@ input[type="file"] { display: none; }
   display: grid; place-items: center; transition: background .15s ease, transform .06s ease;
 }
 .socials a:hover { background: var(--card-hover); transform: translateY(-1px); }
-.socials img { width: 18px; height: 18px; display: block; }
+.socials img, .socials svg { width: 18px; height: 18px; display: block; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 760px) {

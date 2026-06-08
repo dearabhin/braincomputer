@@ -80,7 +80,7 @@ image = (
         "NLTK_DATA": "/usr/local/share/nltk_data",
     })
     # Bundle our scoring code into the image.
-    .add_local_python_source("networks", "scoring", "insights", "preprocess")
+    .add_local_python_source("networks", "scoring", "insights", "preprocess", "brainplot")
 )
 
 app = modal.App("braincomputer-tribe")
@@ -133,6 +133,7 @@ class TribeWorker:
         import preprocess
         import scoring
         import insights
+        import brainplot
 
         t0 = time.time()
         suffix = os.path.splitext(filename)[1] or ".bin"
@@ -149,6 +150,12 @@ class TribeWorker:
             result = scoring.score_predictions(preds, duration_s=routed.duration_s)
             cards = insights.generate_insights(result, routed.modality, routed.experimental)
 
+            # Per-network brain-activation thumbnails (best-effort; never fail the job).
+            try:
+                brain_maps = brainplot.render_network_maps(preds)
+            except Exception:
+                brain_maps = []
+
             return {
                 "schema_version": "1.0",
                 "job_id": job_id,
@@ -158,6 +165,7 @@ class TribeWorker:
                 "engagement_index": result.engagement_index,
                 "networks": result.networks,
                 "timeline": result.timeline,
+                "brain_maps": brain_maps,
                 "insights": cards,
                 "meta": {
                     "experimental": routed.experimental,

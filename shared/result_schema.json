@@ -45,6 +45,20 @@
       }
     },
 
+    "brain_maps": {
+      "description": "Optional per-network inflated-brain thumbnails (inline base64 PNGs) of *predicted* activation. Absent in mock/degenerate runs; the frontend hides the panel when empty.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "label", "image"],
+        "properties": {
+          "key": { "type": "string", "enum": ["visual", "auditory", "language", "emotional_social", "default_mode", "multisensory"] },
+          "label": { "type": "string" },
+          "image": { "type": "string", "description": "data:image/png;base64,... data-URL" }
+        }
+      }
+    },
+
     "insights": {
       "type": "array",
       "items": {

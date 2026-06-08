@@ -39,6 +39,26 @@
     window.BCCharts.networks($("networkChart"), data.networks || []);
     window.BCCharts.timeline($("timelineChart"), data.timeline || { t: [], overall: [] });
 
+    // brain-activation maps (optional; hide the card when absent/empty)
+    const maps = data.brain_maps || [];
+    if (maps.length) {
+      const grid = $("brainMaps");
+      grid.innerHTML = "";
+      maps.forEach((bm) => {
+        const fig = document.createElement("figure");
+        fig.className = "brain-cell";
+        const img = document.createElement("img");
+        img.src = bm.image;
+        img.alt = `${bm.label} network activation`;
+        img.loading = "lazy";
+        const cap = document.createElement("figcaption");
+        cap.textContent = bm.label;
+        fig.append(img, cap);
+        grid.appendChild(fig);
+      });
+      $("brainMapsCard").classList.remove("hidden");
+    }
+
     // insights
     const wrap = $("insights");
     wrap.innerHTML = "";
