@@ -62,7 +62,11 @@ image = (
     # runtime) searches /usr/local/share/nltk_data, so downloading here once avoids the
     # flaky runtime download that failed with "Connection reset by peer".
     .run_commands(
-        "python -m nltk.downloader -d /usr/local/share/nltk_data punkt punkt_tab"
+        "python -m nltk.downloader -d /usr/local/share/nltk_data punkt punkt_tab",
+        # TRIBE's text pipeline uses spaCy's en_core_web_lg (~400 MB) to add context to
+        # transcribed words. Bake it into the image so it isn't pip-downloaded into the
+        # ephemeral container filesystem on every cold start.
+        "python -m spacy download en_core_web_lg",
     )
     # Point heavy caches at the persistent Volume (/cache) and the baked NLTK data, so:
     #  - whisperx's ~1.2 GB alignment model downloads ONCE, then persists across runs
@@ -95,7 +99,11 @@ hf_secret = modal.Secret.from_name("huggingface")
     volumes={CACHE_DIR: cache_vol},
     secrets=[hf_secret],
     scaledown_window=120,           # keep warm 2 min between calls, then scale to zero
-    timeout=600,
+    # A full video runs all 4 extractors (whisperx speech + Llama text + W2v-BERT audio
+    # + V-JEPA2-giant video) and predict. The first cold run also downloads ~2 GB of
+    # weights, and V-JEPA2-giant encoding is heavy on an L4 (~10s/chunk). 600s was too
+    # tight; 1800s gives the cold run headroom. Warm runs are far faster.
+    timeout=1800,
 )
 class TribeWorker:
     @modal.enter()
