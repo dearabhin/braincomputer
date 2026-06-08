@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BrainComputer — Neural engagement analysis for creators</title>
+  <meta name="description" content="Upload a reel, image, audio or text and see how the human brain is predicted to respond — powered by Meta's TRIBE v2." />
+  <!-- Set this at deploy to your API origin, e.g. https://api.braincomputer.in -->
+  <!-- <meta name="bc-api-base" content="https://api.braincomputer.in" /> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <div class="brand">
+        <span class="logo">🧠</span>
+        <span>BrainComputer<small>.in</small></span>
+      </div>
+      <nav class="nav">
+        <a href="#how">How it works</a>
+        <a href="https://github.com/facebookresearch/tribev2" target="_blank" rel="noopener">TRIBE v2</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>See how the brain responds to your content</h1>
+      <p>Upload a short-form video, image, audio clip or caption. We run it through Meta's
+        TRIBE&nbsp;v2 brain model and show the neural-engagement patterns behind it.</p>
+    </section>
+
+    <section class="card">
+      <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload a file">
+        <div class="big">Drop a file here, or click to browse</div>
+        <div class="hint">Reels & videos work best — audio, images and captions are supported too.</div>
+        <div class="formats">mp4 · mov · webm · jpg · png · mp3 · wav · txt &nbsp;|&nbsp; up to 100&nbsp;MB</div>
+        <input id="file" type="file"
+          accept="video/*,image/*,audio/*,.txt,.md" />
+      </div>
+
+      <div id="filechip" class="filechip">
+        <span class="i-ico">📎</span>
+        <span class="name" id="fileName"></span>
+        <span class="meta" id="fileMeta"></span>
+      </div>
+
+      <div class="row">
+        <button id="analyzeBtn" class="btn" disabled>Analyze engagement →</button>
+        <button id="clearBtn" class="btn secondary hidden">Clear</button>
+      </div>
+      <div id="error" class="error"></div>
+
+      <div class="disclaimer">
+        <strong>Honest note:</strong> TRIBE&nbsp;v2 predicts where an average human brain would
+        activate — not guaranteed views or reach. Scores are neuro-derived <em>proxies</em> to guide
+        creative choices. This is a non-commercial research/portfolio tool (model is CC-BY-NC).
+      </div>
+    </section>
+
+    <section id="how" class="features">
+      <div class="feature"><div class="ico">🎬</div><h3>Any short-form content</h3>
+        <p>Video, image, audio or text — routed through the right modality automatically.</p></div>
+      <div class="feature"><div class="ico">🧬</div><h3>Six brain networks</h3>
+        <p>Visual, auditory, language, emotional-social, default-mode and multisensory scores.</p></div>
+      <div class="feature"><div class="ico">⚡</div><h3>Actionable insights</h3>
+        <p>Plain-language tips on hooks, pacing, captions and emotional pull.</p></div>
+    </section>
+
+    <footer>
+      Built on <a href="https://github.com/facebookresearch/tribev2" target="_blank" rel="noopener">TRIBE&nbsp;v2</a>
+      (d'Ascoli et&nbsp;al., 2026), used as-is under CC-BY-NC-4.0. Not affiliated with Meta.
+    </footer>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

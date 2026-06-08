@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BrainComputer analysis result",
+  "description": "Contract between the inference worker, Flask backend, and frontend. One of these objects is produced per analyzed upload.",
+  "type": "object",
+  "required": ["schema_version", "job_id", "modality", "status", "engagement_index", "networks", "timeline", "insights", "meta"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "job_id": { "type": "string" },
+    "modality": { "type": "string", "enum": ["video", "image", "audio", "text"] },
+    "status": { "type": "string", "enum": ["queued", "running", "done", "error"] },
+    "error": { "type": ["string", "null"] },
+
+    "engagement_index": {
+      "description": "Composite 0-100 neural-engagement proxy. NOT a guarantee of reach.",
+      "type": "number", "minimum": 0, "maximum": 100
+    },
+
+    "networks": {
+      "description": "Per functional-network 0-100 scores derived from predicted brain activity.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "label", "score"],
+        "properties": {
+          "key": { "type": "string", "enum": ["visual", "auditory", "language", "emotional_social", "default_mode", "multisensory"] },
+          "label": { "type": "string" },
+          "score": { "type": "number", "minimum": 0, "maximum": 100 },
+          "description": { "type": "string" }
+        }
+      }
+    },
+
+    "timeline": {
+      "description": "Engagement over the clip's duration, for hook/pacing insights.",
+      "type": "object",
+      "required": ["t", "overall"],
+      "properties": {
+        "t": { "type": "array", "items": { "type": "number" }, "description": "seconds" },
+        "overall": { "type": "array", "items": { "type": "number" } },
+        "by_network": {
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "number" } }
+        }
+      }
+    },
+
+    "insights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "title", "body"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["positive", "tip", "warning"] },
+          "title": { "type": "string" },
+          "body": { "type": "string" }
+        }
+      }
+    },
+
+    "meta": {
+      "type": "object",
+      "properties": {
+        "experimental": { "type": "boolean", "description": "true for degenerate inputs (image/text-only)" },
+        "duration_s": { "type": ["number", "null"] },
+        "n_vertices": { "type": ["integer", "null"] },
+        "n_timesteps": { "type": ["integer", "null"] },
+        "model": { "type": "string" },
+        "processing_ms": { "type": ["integer", "null"] }
+      }
+    }
+  }
+}

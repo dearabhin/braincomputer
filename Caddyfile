@@ -1,0 +1,9 @@
+# Caddy reverse proxy for the BrainComputer API.
+# Caddy automatically obtains and renews a free HTTPS certificate from Let's Encrypt.
+# For that to work, api.braincomputer.in must point straight at this server
+# (Cloudflare DNS record set to "DNS only" / grey cloud — see DEPLOYMENT.md).
+
+api.braincomputer.in {
+	reverse_proxy api:8000
+	encode gzip
+}

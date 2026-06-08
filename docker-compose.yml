@@ -1,0 +1,37 @@
+# Runs the BrainComputer backend API + a Caddy reverse proxy (automatic HTTPS) on
+# your VPS. The GPU model does NOT run here — it runs on Modal's cloud; this box
+# only orchestrates. See DEPLOYMENT.md for the full walkthrough.
+#
+#   docker compose up -d --build      # start
+#   docker compose logs -f            # watch logs
+#   docker compose down               # stop
+
+services:
+  api:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env            # holds MODAL_TOKEN_ID / MODAL_TOKEN_SECRET / etc.
+    environment:
+      - PORT=8000
+    volumes:
+      - apidata:/app/.data    # persists job records + cached results (local storage)
+    expose:
+      - "8000"                # internal only; Caddy is the public entrypoint
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  apidata:
+  caddy_data:
+  caddy_config:

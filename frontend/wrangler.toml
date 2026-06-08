@@ -1,0 +1,6 @@
+# Cloudflare Pages project config for the BrainComputer frontend.
+# Deploy:  wrangler pages deploy frontend --project-name=braincomputer
+# Local:   wrangler pages dev frontend
+name = "braincomputer"
+pages_build_output_dir = "."
+compatibility_date = "2026-06-01"

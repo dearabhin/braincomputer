@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your results — BrainComputer</title>
+  <!-- <meta name="bc-api-base" content="https://api.braincomputer.in" /> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <div class="brand">
+        <a href="index.html" style="color:inherit"><span class="logo">🧠</span></a>
+        <span>BrainComputer<small>.in</small></span>
+      </div>
+      <nav class="nav"><a href="index.html">+ New analysis</a></nav>
+    </header>
+
+    <!-- loading -->
+    <section id="loading" class="loading">
+      <div class="spinner"></div>
+      <div class="status" id="loadStatus">Running TRIBE v2 on your content…</div>
+    </section>
+
+    <!-- error -->
+    <section id="errorView" class="card hidden">
+      <h2>Something went wrong</h2>
+      <p id="errorMsg" class="error"></p>
+      <a class="btn" href="index.html">← Try another file</a>
+    </section>
+
+    <!-- results -->
+    <section id="resultsView" class="hidden">
+      <div class="results-head">
+        <div>
+          <h1 style="margin:0">Neural engagement report
+            <span id="expPill" class="exp-pill hidden">experimental input</span>
+          </h1>
+          <div class="status" id="metaLine"></div>
+        </div>
+        <div class="index-badge">
+          <div class="index-ring">
+            <canvas id="indexRing" width="110" height="110"></canvas>
+            <div class="val"><span id="indexVal">–</span><span class="lbl">ENGAGEMENT INDEX</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="chart-card">
+          <div class="panel-title">Brain-network engagement</div>
+          <canvas id="networkChart" height="260"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="panel-title">Engagement over time</div>
+          <canvas id="timelineChart" height="260"></canvas>
+        </div>
+      </div>
+
+      <div class="insights" id="insights"></div>
+
+      <div class="disclaimer">
+        <strong>Reminder:</strong> these are proxies derived from <em>predicted</em> brain activity
+        (TRIBE v2), not a measurement of real viewers and not a guarantee of reach.
+      </div>
+    </section>
+
+    <footer>
+      Built on <a href="https://github.com/facebookresearch/tribev2" target="_blank" rel="noopener">TRIBE&nbsp;v2</a>,
+      used as-is under CC-BY-NC-4.0. Not affiliated with Meta.
+    </footer>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/results.js"></script>
+</body>
+</html>
