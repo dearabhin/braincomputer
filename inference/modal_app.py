@@ -40,14 +40,41 @@ image = (
         # breaks `import TribeModel` with AttributeError. 0.5.20 satisfies neuralset's
         # `exca>=0.5.20` floor and still has NoValue in exca.steps.base.
         "exca==0.5.20",
-        # TRIBE v2 itself. Its pyproject pins compatible torch/numpy/pandas/transformers
-        # (numpy==2.2.6, torch>=2.5.1,<2.7, neuralset==0.0.2, ...), so we DON'T pin those
-        # ourselves — loose pins here just re-introduce resolver drift.
+        # Pin transformers to the version current at TRIBE's release (neuralset 0.0.2,
+        # 2026-03-25). TRIBE leaves transformers UNPINNED, so pip grabbed the newest
+        # (5.10.2), where the V-JEPA2 video processor's `AutoProcessor` import path
+        # changed -> "Could not import module 'AutoProcessor'". 5.3.0 (2026-03-04) was
+        # the current release on TRIBE's release day (5.4.0 came 2026-03-27).
+        "transformers==5.3.0",
+        # TRIBE v2 itself. Its pyproject pins compatible torch/numpy/pandas, but leaves
+        # transformers + exca loose (hence the two pins above). We pin numpy/torch via
+        # TRIBE's own constraints, so we don't list them here.
         "git+https://github.com/facebookresearch/tribev2.git",
         # nilearn is only in TRIBE's optional [plotting] extra, but inference/networks.py
         # needs it for the functional-network atlases — install it explicitly.
         "nilearn",
+        # nltk: TRIBE transcribes video/audio speech with whisperx, whose word-alignment
+        # needs NLTK's `punkt_tab` data. We install nltk here only to pre-download that
+        # data into the image (next step) so it's never fetched at runtime.
+        "nltk",
     )
+    # Bake the NLTK tokenizer data into the image. whisperx (run in an isolated uv env at
+    # runtime) searches /usr/local/share/nltk_data, so downloading here once avoids the
+    # flaky runtime download that failed with "Connection reset by peer".
+    .run_commands(
+        "python -m nltk.downloader -d /usr/local/share/nltk_data punkt punkt_tab"
+    )
+    # Point heavy caches at the persistent Volume (/cache) and the baked NLTK data, so:
+    #  - whisperx's ~1.2 GB alignment model downloads ONCE, then persists across runs
+    #    (TORCH_HOME / HF_HOME), instead of re-downloading on every video.
+    #  - the speech step finds punkt_tab without any network call (NLTK_DATA).
+    # These env vars are inherited by the whisperx subprocess that TRIBE spawns. (uv's own
+    # package cache is left at its default — Modal's mirror reinstalls it in <1s anyway.)
+    .env({
+        "HF_HOME": f"{CACHE_DIR}/hf",
+        "TORCH_HOME": f"{CACHE_DIR}/torch",
+        "NLTK_DATA": "/usr/local/share/nltk_data",
+    })
     # Bundle our scoring code into the image.
     .add_local_python_source("networks", "scoring", "insights", "preprocess")
 )
@@ -147,6 +174,12 @@ class TribeWorker:
                     os.unlink(p)
                 except OSError:
                     pass
+            # Persist any newly downloaded caches (whisperx uv env, torch alignment
+            # model, HF assets) to the Volume so later runs skip the re-download.
+            try:
+                cache_vol.commit()
+            except Exception:
+                pass
 
 
 @app.local_entrypoint()
