@@ -14,7 +14,7 @@
   <div class="container">
     <header class="site-header">
       <div class="brand">
-        <a href="index.html" style="color:inherit"><span class="logo">🧠</span></a>
+        <a href="index.html" aria-label="Home"><span class="logo">🧠</span></a>
         <span>BrainComputer<small>.in</small></span>
       </div>
       <nav class="nav"><a href="index.html">+ New analysis</a></nav>
@@ -23,21 +23,21 @@
     <!-- loading -->
     <section id="loading" class="loading">
       <div class="spinner"></div>
-      <div class="status" id="loadStatus">Running TRIBE v2 on your content…</div>
+      <div class="status" id="loadStatus">Analyzing your content…</div>
     </section>
 
     <!-- error -->
     <section id="errorView" class="card hidden">
       <h2>Something went wrong</h2>
       <p id="errorMsg" class="error"></p>
-      <a class="btn" href="index.html">← Try another file</a>
+      <a class="btn" href="index.html">Try another file</a>
     </section>
 
     <!-- results -->
     <section id="resultsView" class="hidden">
       <div class="results-head">
         <div>
-          <h1 style="margin:0">Neural engagement report
+          <h1>Neural engagement report
             <span id="expPill" class="exp-pill hidden">experimental input</span>
           </h1>
           <div class="status" id="metaLine"></div>
@@ -45,7 +45,7 @@
         <div class="index-badge">
           <div class="index-ring">
             <canvas id="indexRing" width="110" height="110"></canvas>
-            <div class="val"><span id="indexVal">–</span><span class="lbl">ENGAGEMENT INDEX</span></div>
+            <div class="val"><span id="indexVal">–</span><span class="lbl">Engagement Index</span></div>
           </div>
         </div>
       </div>
@@ -63,15 +63,21 @@
 
       <div class="insights" id="insights"></div>
 
-      <div class="disclaimer">
-        <strong>Reminder:</strong> these are proxies derived from <em>predicted</em> brain activity
-        (TRIBE v2), not a measurement of real viewers and not a guarantee of reach.
+      <div class="note">
+        These are proxies derived from <em>predicted</em> brain activity — a creative guide,
+        not a measurement of real viewers or a guarantee of reach.
       </div>
     </section>
 
-    <footer>
-      Built on <a href="https://github.com/facebookresearch/tribev2" target="_blank" rel="noopener">TRIBE&nbsp;v2</a>,
-      used as-is under CC-BY-NC-4.0. Not affiliated with Meta.
+    <footer class="site-footer">
+      <div class="by">Built by <a href="https://abhinkrishna.com" target="_blank" rel="noopener">Abhin Krishna</a></div>
+      <div class="socials">
+        <a href="https://github.com/dearabhin" target="_blank" rel="noopener" aria-label="GitHub"><img src="https://cdn.simpleicons.org/github/b3b3b3" alt="GitHub" loading="lazy" /></a>
+        <a href="https://linkedin.com/in/abhin-krishna" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="https://cdn.simpleicons.org/linkedin/b3b3b3" alt="LinkedIn" loading="lazy" /></a>
+        <a href="https://instagram.com/dearabhin" target="_blank" rel="noopener" aria-label="Instagram"><img src="https://cdn.simpleicons.org/instagram/b3b3b3" alt="Instagram" loading="lazy" /></a>
+        <a href="https://youtube.com/@dearabhin" target="_blank" rel="noopener" aria-label="YouTube"><img src="https://cdn.simpleicons.org/youtube/b3b3b3" alt="YouTube" loading="lazy" /></a>
+        <a href="https://blog.abhinkrishna.com" target="_blank" rel="noopener" aria-label="Blog"><img src="https://cdn.simpleicons.org/rss/b3b3b3" alt="Blog" loading="lazy" /></a>
+      </div>
     </footer>
   </div>
 

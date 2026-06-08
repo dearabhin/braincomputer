@@ -60,7 +60,7 @@
 
   window.BC.pollJob(jobId, {
     onTick: (d) => {
-      if (d.status === "running") $("loadStatus").textContent = "Running TRIBE v2 on your content… (this can take a minute on a cold GPU)";
+      if (d.status === "running") $("loadStatus").textContent = "Analyzing your content… (this can take a minute or two)";
     },
   })
     .then((data) => {

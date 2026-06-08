@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BrainComputer — Neural engagement analysis for creators</title>
-  <meta name="description" content="Upload a reel, image, audio or text and see how the human brain is predicted to respond — powered by Meta's TRIBE v2." />
+  <meta name="description" content="Upload a reel, image, audio clip or caption and see how the human brain is predicted to respond — turn neural engagement into better content." />
   <!-- Set this at deploy to your API origin, e.g. https://api.braincomputer.in -->
   <!-- <meta name="bc-api-base" content="https://api.braincomputer.in" /> -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,23 +20,21 @@
       </div>
       <nav class="nav">
         <a href="#how">How it works</a>
-        <a href="https://github.com/facebookresearch/tribev2" target="_blank" rel="noopener">TRIBE v2</a>
       </nav>
     </header>
 
     <section class="hero">
       <h1>See how the brain responds to your content</h1>
-      <p>Upload a short-form video, image, audio clip or caption. We run it through Meta's
-        TRIBE&nbsp;v2 brain model and show the neural-engagement patterns behind it.</p>
+      <p>Upload a short-form video, image, audio clip or caption. We run it through a
+        state-of-the-art brain-encoding model and show the neural-engagement patterns behind it.</p>
     </section>
 
     <section class="card">
       <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload a file">
         <div class="big">Drop a file here, or click to browse</div>
-        <div class="hint">Reels & videos work best — audio, images and captions are supported too.</div>
+        <div class="hint">Reels &amp; videos work best — audio, images and captions are supported too.</div>
         <div class="formats">mp4 · mov · webm · jpg · png · mp3 · wav · txt &nbsp;|&nbsp; up to 100&nbsp;MB</div>
-        <input id="file" type="file"
-          accept="video/*,image/*,audio/*,.txt,.md" />
+        <input id="file" type="file" accept="video/*,image/*,audio/*,.txt,.md" />
       </div>
 
       <div id="filechip" class="filechip">
@@ -46,16 +44,10 @@
       </div>
 
       <div class="row">
-        <button id="analyzeBtn" class="btn" disabled>Analyze engagement →</button>
+        <button id="analyzeBtn" class="btn" disabled>Analyze engagement</button>
         <button id="clearBtn" class="btn secondary hidden">Clear</button>
       </div>
       <div id="error" class="error"></div>
-
-      <div class="disclaimer">
-        <strong>Honest note:</strong> TRIBE&nbsp;v2 predicts where an average human brain would
-        activate — not guaranteed views or reach. Scores are neuro-derived <em>proxies</em> to guide
-        creative choices. This is a non-commercial research/portfolio tool (model is CC-BY-NC).
-      </div>
     </section>
 
     <section id="how" class="features">
@@ -67,9 +59,15 @@
         <p>Plain-language tips on hooks, pacing, captions and emotional pull.</p></div>
     </section>
 
-    <footer>
-      Built on <a href="https://github.com/facebookresearch/tribev2" target="_blank" rel="noopener">TRIBE&nbsp;v2</a>
-      (d'Ascoli et&nbsp;al., 2026), used as-is under CC-BY-NC-4.0. Not affiliated with Meta.
+    <footer class="site-footer">
+      <div class="by">Built by <a href="https://abhinkrishna.com" target="_blank" rel="noopener">Abhin Krishna</a></div>
+      <div class="socials">
+        <a href="https://github.com/dearabhin" target="_blank" rel="noopener" aria-label="GitHub"><img src="https://cdn.simpleicons.org/github/b3b3b3" alt="GitHub" loading="lazy" /></a>
+        <a href="https://linkedin.com/in/abhin-krishna" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="https://cdn.simpleicons.org/linkedin/b3b3b3" alt="LinkedIn" loading="lazy" /></a>
+        <a href="https://instagram.com/dearabhin" target="_blank" rel="noopener" aria-label="Instagram"><img src="https://cdn.simpleicons.org/instagram/b3b3b3" alt="Instagram" loading="lazy" /></a>
+        <a href="https://youtube.com/@dearabhin" target="_blank" rel="noopener" aria-label="YouTube"><img src="https://cdn.simpleicons.org/youtube/b3b3b3" alt="YouTube" loading="lazy" /></a>
+        <a href="https://blog.abhinkrishna.com" target="_blank" rel="noopener" aria-label="Blog"><img src="https://cdn.simpleicons.org/rss/b3b3b3" alt="Blog" loading="lazy" /></a>
+      </div>
     </footer>
   </div>
 
