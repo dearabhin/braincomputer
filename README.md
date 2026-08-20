@@ -58,9 +58,6 @@ Then run the backend **without** `MOCK_INFERENCE` (with `modal token` configured
 
 ## Deploy
 
-**New to this? Follow the complete beginner walkthrough: [`DEPLOYMENT.md`](DEPLOYMENT.md).** It covers
-GitHub, Hugging Face, Modal, the DigitalOcean droplet, every VPS command, and all Cloudflare settings.
-
 Quick reference:
 
 | Tier      | Where                | Notes |
