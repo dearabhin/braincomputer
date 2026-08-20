@@ -6,10 +6,7 @@ Meta's [**TRIBE v2**](https://github.com/facebookresearch/tribev2) fMRI brain-en
 return neural-engagement proxy scores, brain-network charts, an engagement timeline, and plain-language
 tips on hooks, pacing, captions, and emotional pull.
 
-> ⚠️ **Honest framing.** TRIBE v2 predicts *where an average human brain activates* — it does **not**
-> measure real viewers or guarantee reach/virality. Scores here are neuro-derived **proxies** meant to
-> guide creative choices.
->
+
 > ⚖️ **License.** TRIBE v2 is **CC-BY-NC-4.0 (non-commercial)** and its Llama 3.2 encoder is gated.
 > This project is **free / research / portfolio** by design. Don't add paid tiers or other commercial
 > use without written permission from Meta.
@@ -27,7 +24,7 @@ Browser → Cloudflare Pages (static) → Flask API (CPU) → Modal serverless G
   activity on the fsaverage5 mesh, and turns it into scores/insights. Scales to zero between uploads,
   so a ~$100 budget lasts.
 
-See [`CLAUDE.md`](CLAUDE.md) and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design.
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design.
 
 ## Quick start (no GPU needed)
 
